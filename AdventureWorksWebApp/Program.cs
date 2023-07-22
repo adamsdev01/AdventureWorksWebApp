@@ -14,7 +14,7 @@ builder.Services.AddTelerikBlazor();
 
 // Add ConnectionString
 builder.Configuration
-    .SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");
+    .SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").AddUserSecrets<Program>(true);
 
 builder.Services.AddDbContext<AdventureWorks2022Context>(options =>
 {
