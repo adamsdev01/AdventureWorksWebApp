@@ -1,0 +1,56 @@
+﻿@page "/Employees"
+
+<br />
+<div class="alert alert-primary" role="alert">
+    <h3 style="text-align:center;">Employees</h3>
+</div>
+@if (IsLoading)
+{
+    <div class="employee-loading">
+        <TelerikLoader Visible="@LoaderVisible"
+                       Size="@ThemeConstants.Loader.Size.Large"
+                       ThemeColor="@ThemeConstants.Loader.ThemeColor.Primary"
+                       Type="@LoaderType.ConvergingSpinner" />
+    </div>
+}
+else
+{
+    <TelerikGrid Data="@EmployeeData"
+                 Height="100%"
+                 PageSize="10"
+                 Pageable="true" Sortable="true"
+                 FilterMode="@GridFilterMode.FilterRow">
+        <GridColumns>
+            <GridColumn Field="@nameof(EmployeeViewModel.FullName)" Title="Employee Name" />
+            <GridColumn Field="@nameof(EmployeeViewModel.JobTitle)" Title="Job Title" />
+            <GridColumn Field="@nameof(EmployeeViewModel.HireDate)" DisplayFormat="{0:D}" Title="Hire Date" />
+            <GridColumn Field="@nameof(EmployeeViewModel.IsSalaried)" Title="Salaried" />
+        </GridColumns>
+    </TelerikGrid>
+    
+}
+<br />
+<br />
+
+
+@code {
+
+    public List<EmployeeViewModel>? EmployeeData { get; set; }
+    public bool IsLoading { get; set; }
+    public bool LoaderVisible { get; set;  }
+
+    public async Task GetGridData()
+    {
+        IsLoading = true;
+        LoaderVisible = true;
+        await Task.Delay(1);
+        EmployeeData = await _hrService.GetAllEmployeesDataAsListAsync();
+        IsLoading = false;
+        LoaderVisible = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetGridData();
+    }
+}
