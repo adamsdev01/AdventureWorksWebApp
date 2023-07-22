@@ -1,0 +1,22 @@
+﻿@layout TelerikLayout
+
+@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <div class="main">
+        <div class="top-row px-4">
+            <a href="https://github.com/adamsdev01/AdventureWorksWebApp" target="_blank">Adams-Developer</a>
+        </div>
+
+        <div class="content px-4">
+            @Body
+        </div>
+        <div class="footer">
+            <p class="text-center">&copy; @DateTime.Now.Year - Adventure Works Company</p>
+        </div>
+    </div>
+</div>
