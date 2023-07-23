@@ -1,7 +1,93 @@
 ﻿@page "/ViewEmployee/Id/{BusinessEntityId:int}"
 
-<h3>View Employee</h3>
-<p>Gender: @selectedEmployee.Gender</p>
+<br />
+<div class="alert alert-primary" role="alert">
+    <h3 style="text-align:center;">View Employee</h3>
+    <TelerikButton OnClick="@OnClickGoBack" Icon="arrow-chevron-left" ThemeColor="@ThemeConstants.Button.ThemeColor.Info">Go Back</TelerikButton>
+</div>
+<TelerikForm Model="@selectedEmployee">
+    <FormItems>
+        <h5 style="font-weight:bold;">Employee Information</h5>
+        <div class="row">
+            <div class="col-md-3">
+                <label>Full Name</label>
+                <TelerikTextBox Enabled="false" @bind-Value="@FullName"></TelerikTextBox>
+            </div>
+            <div class="col-md-3">
+                <label>Hire Date</label>
+                <TelerikDateInput Enabled="false" @bind-Value="@selectedEmployee.HireDate" Format="MM/dd/yyyy"></TelerikDateInput>
+            </div>
+            <div class="col-md-3">
+                <label>Date of Birth</label>
+                <TelerikDateInput Enabled="false" @bind-Value="@selectedEmployee.BirthDate" Format="MMM/dd/yyyy"></TelerikDateInput>
+            </div>  
+            <div class="col-md-3">
+                <label>Gender</label>
+                <TelerikTextBox Enabled="false" @bind-Value="@selectedEmployee.Gender"></TelerikTextBox>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-3">
+                <label>Job Title</label>
+                <TelerikTextBox Enabled="false" @bind-Value="@selectedEmployee.JobTitle"></TelerikTextBox>
+            </div>
+            <div class="col-md-3">
+                <label>On Salary</label>
+                <TelerikCheckBox Enabled="false" @bind-Value="@selectedEmployee.SalariedFlag"></TelerikCheckBox>
+            </div>            
+            <div class="col-md-3">
+                <label>Marital Status</label>
+                <TelerikTextBox Enabled="false" @bind-Value="@selectedEmployee.MaritalStatus"></TelerikTextBox>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-3">
+                <label>Available Sick Time</label>
+                <TelerikNumericTextBox Enabled="false" @bind-Value="@selectedEmployee.SickLeaveHours"></TelerikNumericTextBox>
+            </div>
+            <div class="col-md-3">
+                <label>Available Vacation Time</label>
+                <TelerikNumericTextBox Enabled="false" @bind-Value="@selectedEmployee.VacationHours"></TelerikNumericTextBox>
+            </div>
+        </div>
+        <br />
+        <h5 style="font-weight:bold;">Department History</h5>
+        <div class="row">
+            <EmployeeDeptHistoriesGrid BusinessEntityId="BusinessEntityId"></EmployeeDeptHistoriesGrid>
+        </div>
+        <br />
+        <h5 style="font-weight:bold;">Employee Pay History</h5>
+        <div class="row">
+            <div class="col-md-3">
+                <label>Hourly Pay Rate</label>
+                <TelerikNumericTextBox Enabled="false" @bind-Value="@selectedEmployeePayHistory.Rate"></TelerikNumericTextBox>
+            </div>
+            <div class="col-md-3">
+                <label>Last Pay Rate Update</label>
+                <TelerikDateInput Format="MM/dd/yyyy" Enabled="false" @bind-Value="@selectedEmployeePayHistory.RateChangeDate"></TelerikDateInput>
+            </div>
+            <div class="col-md-3">
+                <label>Pay Frequency</label>
+                @if(selectedEmployeePayHistory.PayFrequency == 1)
+                {
+                    <TelerikTextBox Enabled="false" @bind-Value="Monthly"></TelerikTextBox>
+                }
+                else
+                {
+                    <TelerikTextBox Enabled="false" @bind-Value="BiWeekly"></TelerikTextBox>
+                }
+            </div>
+        </div>
+        <br />
+
+        <br />
+        <br />
+    </FormItems>
+    <FormButtons>
+    </FormButtons>
+</TelerikForm>
 
 @code {
 
@@ -9,20 +95,29 @@
     public int BusinessEntityId { get; set; }
 
     public Employee? selectedEmployee = new();
+    public string? FullName { get; set; }
+    public decimal HourlyPayRate { get; set; }
+    public string Monthly { get; set; } = "Monthly";
+    public string BiWeekly { get; set; } = "Bi-Weekly";
 
-    public Employee? employee { get; set; }
+    public EmployeePayHistory? selectedEmployeePayHistory = new();
+    public EmployeeDepartmentHistory selectedEmployeeDeptHist = new();
 
     protected override async Task OnInitializedAsync()
     {
         selectedEmployee = await _hrService.GetEmployeeAsync(BusinessEntityId);
-        //@if(selectedEmployee != null)
-        //{
-        //    selectedEmployee.Gender = employee.Gender;
-        //}
+        FullName = selectedEmployee.BusinessEntity.FirstName + " " + selectedEmployee.BusinessEntity.MiddleName + " " + selectedEmployee.BusinessEntity.LastName;
+        HourlyPayRate =  selectedEmployee.EmployeePayHistories.Select(e => e.Rate).First();
+        selectedEmployeePayHistory = selectedEmployee.EmployeePayHistories.FirstOrDefault();
     }
 
     public void GetEmployee(int BusinessEntityId)
     {
-        
+
+    }
+
+    public void OnClickGoBack()
+    {
+        _navigationManager.NavigateTo("/Employees");
     }
 }

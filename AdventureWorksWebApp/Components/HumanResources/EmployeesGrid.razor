@@ -26,10 +26,28 @@ else
         <GridColumns>
             <GridColumn Field="@nameof(EmployeeViewModel.FullName)" Title="Employee Name" />
             <GridColumn Field="@nameof(EmployeeViewModel.JobTitle)" Title="Job Title" />
-            <GridColumn Field="@nameof(EmployeeViewModel.HireDate)" DisplayFormat="{0:D}" Title="Hire Date" />
-            <GridColumn Field="@nameof(EmployeeViewModel.IsSalaried)" Title="Salaried" />
-            <GridCommandColumn>
-                <GridCommandButton OnClick="(args)=> OnClickEmployeeSelected(args)" Title="View" Icon="checkmark">Edit</GridCommandButton>
+            <GridColumn Field="@nameof(EmployeeViewModel.HireDate)" DisplayFormat="{0:MMM-dd-yyyy}" Title="Hire Date" />
+            <GridColumn Field="@nameof(EmployeeViewModel.IsSalaried)" Title="Salaried" >
+                <Template>
+                    @{
+                        var e = (EmployeeViewModel)context;
+                        @if(e.IsSalaried.Equals(true))
+                        {
+                            <span>
+                                <h6><span class="badge bg-success">Yes</span></h6>
+                            </span>
+                        }
+                        else if (e.IsSalaried.Equals(false))
+                        {
+                            <span>
+                                <h6><span class="badge bg-warning">No</span></h6>
+                            </span>
+                        }
+                    }
+                </Template>
+            </GridColumn>
+            <GridCommandColumn Title="Actions">
+                <GridCommandButton OnClick="(args)=> OnClickEmployeeSelected(args)" Title="View" Icon="checkmark" ThemeColor="@ThemeConstants.Button.ThemeColor.Warning"></GridCommandButton>
             </GridCommandColumn>
         </GridColumns>
     </TelerikGrid>
@@ -43,7 +61,6 @@ else
 
     public List<EmployeeViewModel>? EmployeeData { get; set; }
     public int BusinessEntityId { get; set; }
-
 
     public bool IsLoading { get; set; }
     public bool LoaderVisible { get; set;  }

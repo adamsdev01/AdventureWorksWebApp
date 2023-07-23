@@ -1,0 +1,94 @@
+﻿@page "/EmployeeDepartmentHistory/{BusinessEntityId:int}"
+
+<TelerikGrid Data="@EmployeeDeptHistoriesData"
+             Height="250px"
+             PageSize="2"
+             Pageable="true" 
+             Sortable="true"
+             FilterMode="@GridFilterMode.FilterRow">
+    <GridToolBar>
+        <TelerikButton OnClick="@OnClickCreate" Icon="add" ThemeColor="@ThemeConstants.Button.ThemeColor.Primary">New Department</TelerikButton>
+    </GridToolBar>
+    <GridColumns>
+        <GridColumn Field="@nameof(EmployeeDepartmentHistory.DepartmentId)" Title="Department">
+            <Template>
+                @{
+                    var dept = (EmployeeDepartmentHistory)context;
+                }
+                @* Templates should rely on fast and sync logic for better rendering performance. *@
+                @DeptData.FirstOrDefault(d => d.DepartmentId == dept.DepartmentId)?.GroupName
+            </Template>
+        </GridColumn>
+        <GridColumn Field="@nameof(EmployeeDepartmentHistory.DepartmentId)" Title="Title">
+            <Template>
+                @{
+                    var dept = (EmployeeDepartmentHistory)context;
+                }
+                @* Templates should rely on fast and sync logic for better rendering performance. *@
+                @DeptData.FirstOrDefault(d => d.DepartmentId == dept.DepartmentId)?.Name
+            </Template>
+        </GridColumn>
+        <GridColumn Field="@nameof(EmployeeDepartmentHistory.StartDate)" Title="Start Date" DisplayFormat="{0:MMM-dd-yyyy}" />
+        <GridColumn Field="@nameof(EmployeeDepartmentHistory.ShiftId)" Title="Shift">
+            <Template>
+                @{
+                    var dept = (EmployeeDepartmentHistory)context;
+                }
+                @* Templates should rely on fast and sync logic for better rendering performance. *@
+                @ShiftData.FirstOrDefault(s => s.ShiftId == dept.ShiftId)?.Name
+            </Template>
+        </GridColumn>
+        <GridColumn Field="@nameof(EmployeeDepartmentHistory.ShiftId)" Title="Shift Start">
+            <Template>
+                @{
+                    var dept = (EmployeeDepartmentHistory)context;
+                }
+                @* Templates should rely on fast and sync logic for better rendering performance. *@
+                @ShiftData.FirstOrDefault(s => s.ShiftId == dept.ShiftId)?.StartTime
+            </Template>
+        </GridColumn>
+        <GridColumn Field="@nameof(EmployeeDepartmentHistory.ShiftId)" Title="Shift End">
+            <Template>
+                @{
+                    var dept = (EmployeeDepartmentHistory)context;
+                }
+                @* Templates should rely on fast and sync logic for better rendering performance. *@
+                @ShiftData.FirstOrDefault(s => s.ShiftId == dept.ShiftId)?.EndTime
+            </Template>
+        </GridColumn>
+    </GridColumns>
+</TelerikGrid>
+
+@code {
+
+    [Parameter]
+    public int BusinessEntityId { get; set; }
+
+    public List<EmployeeDepartmentHistory>? EmployeeDeptHistoriesData { get; set; }
+    public EmployeeDepartmentHistory EmployeeDepartmentHistory = new();
+    public List<Department>? DeptData { get; set; }
+    public List<Shift>? ShiftData { get; set; }
+
+    public async Task GetGridData()
+    {
+        EmployeeDeptHistoriesData = await _hrService.GetEmployeeDepartmentHistoryDataAsync(BusinessEntityId);
+        DeptData = EmployeeDeptHistoriesData.Select(e => e.Department).ToList();
+        ShiftData = EmployeeDeptHistoriesData.Select(e => e.Shift).ToList();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetGridData();
+    }
+
+    public void OnClickCreate()
+    {
+        _navigationManager.NavigateTo("/NewDepartment");
+    }
+
+    public void OnClickEmployeeSelected(GridCommandEventArgs args)
+    {
+        EmployeeViewModel item = (EmployeeViewModel)args.Item;
+        _navigationManager.NavigateTo("/ViewEmployee/Id/" + item.BusinessEntityId);
+    }
+}

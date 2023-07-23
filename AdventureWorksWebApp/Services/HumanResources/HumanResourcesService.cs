@@ -38,10 +38,11 @@ namespace AdventureWorksWebApp.Services.HumanResources
         #endregion
 
         #region Get Employee by Id
-        public async Task<Employee> GetEmployeeAsync(int Id)
+        public async Task<Employee> GetEmployeeAsync(int businessEntityId)
         {
             Employee employee = await _dbContext.Employees
-                .Where(e => e.BusinessEntityId.Equals(Id))
+                .Include(e => e.EmployeePayHistories)
+                .Where(e => e.BusinessEntityId.Equals(businessEntityId))
                 .FirstOrDefaultAsync();
 
             return employee;
@@ -105,6 +106,29 @@ namespace AdventureWorksWebApp.Services.HumanResources
         }
         #endregion
 
+        #region Get Employee Pay Rate
+        public async Task<EmployeePayHistory> GetEmployeePayDataAsync(int businessEntityId)
+        {
+            EmployeePayHistory employeePayData = await _dbContext.EmployeePayHistories
+                .Where(e => e.BusinessEntityId.Equals(businessEntityId))
+                .FirstOrDefaultAsync();
+
+            return employeePayData;
+        }
+        #endregion
+
+        #region Get Employee Department Histories
+        public async Task<List<EmployeeDepartmentHistory>> GetEmployeeDepartmentHistoryDataAsync(int businessEntityId)
+        {
+            var employeeDepartmentHistory = await _dbContext.EmployeeDepartmentHistories
+                .Include(e => e.Department)
+                .Include(e => e.Shift)
+                .Where(e => e.BusinessEntityId.Equals(businessEntityId))
+                .ToListAsync();
+
+            return employeeDepartmentHistory;
+        }
+        #endregion
 
     }
 }

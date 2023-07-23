@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UseRazorSourceGenerator>false</UseRazorSourceGenerator>
+    <UseRazorSourceGenerator>true</UseRazorSourceGenerator>
     <UserSecretsId>17c77f1d-84d6-4df9-9379-174785332fe0</UserSecretsId>
   </PropertyGroup>
   
