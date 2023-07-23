@@ -88,6 +88,7 @@ namespace AdventureWorksWebApp.Services.HumanResources
               emp => emp.BusinessEntityId,
               (p, emp) => new EmployeeViewModel
               {
+                 BusinessEntityId = p.BusinessEntityId,
                  FullName = p.FirstName + " " + p.MiddleName + " " + p.LastName,
                  FirstName = p.FirstName,
                  MiddleName = p.MiddleName,

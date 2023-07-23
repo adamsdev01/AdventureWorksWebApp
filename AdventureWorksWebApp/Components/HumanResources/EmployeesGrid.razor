@@ -20,11 +20,17 @@ else
                  PageSize="10"
                  Pageable="true" Sortable="true"
                  FilterMode="@GridFilterMode.FilterRow">
+        <GridToolBar>
+            <TelerikButton OnClick="@OnClickCreate" Icon="add" ThemeColor="@ThemeConstants.Button.ThemeColor.Primary">New Employee</TelerikButton>
+        </GridToolBar>
         <GridColumns>
             <GridColumn Field="@nameof(EmployeeViewModel.FullName)" Title="Employee Name" />
             <GridColumn Field="@nameof(EmployeeViewModel.JobTitle)" Title="Job Title" />
             <GridColumn Field="@nameof(EmployeeViewModel.HireDate)" DisplayFormat="{0:D}" Title="Hire Date" />
             <GridColumn Field="@nameof(EmployeeViewModel.IsSalaried)" Title="Salaried" />
+            <GridCommandColumn>
+                <GridCommandButton OnClick="(args)=> OnClickEmployeeSelected(args)" Title="View" Icon="checkmark">Edit</GridCommandButton>
+            </GridCommandColumn>
         </GridColumns>
     </TelerikGrid>
     
@@ -36,6 +42,9 @@ else
 @code {
 
     public List<EmployeeViewModel>? EmployeeData { get; set; }
+    public int BusinessEntityId { get; set; }
+
+
     public bool IsLoading { get; set; }
     public bool LoaderVisible { get; set;  }
 
@@ -52,5 +61,16 @@ else
     protected override async Task OnInitializedAsync()
     {
         await GetGridData();
+    }
+
+    public void OnClickCreate()
+    {
+        _navigationManager.NavigateTo("/NewEmployee");
+    }
+
+    public void OnClickEmployeeSelected(GridCommandEventArgs args)
+    {
+        EmployeeViewModel item = (EmployeeViewModel)args.Item;
+        _navigationManager.NavigateTo("/ViewEmployee/Id/" + item.BusinessEntityId);
     }
 }

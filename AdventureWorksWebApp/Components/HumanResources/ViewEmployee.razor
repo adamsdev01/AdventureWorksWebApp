@@ -1,0 +1,28 @@
+﻿@page "/ViewEmployee/Id/{BusinessEntityId:int}"
+
+<h3>View Employee</h3>
+<p>Gender: @selectedEmployee.Gender</p>
+
+@code {
+
+    [Parameter]
+    public int BusinessEntityId { get; set; }
+
+    public Employee? selectedEmployee = new();
+
+    public Employee? employee { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        selectedEmployee = await _hrService.GetEmployeeAsync(BusinessEntityId);
+        //@if(selectedEmployee != null)
+        //{
+        //    selectedEmployee.Gender = employee.Gender;
+        //}
+    }
+
+    public void GetEmployee(int BusinessEntityId)
+    {
+        
+    }
+}
