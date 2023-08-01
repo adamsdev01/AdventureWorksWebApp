@@ -194,5 +194,17 @@ a, .btn-link {
     background-color: #f7f7f7;
     padding-top: 4px;
 }
-
-/* Employees Grid Loading Spinner */
+/* Person Grid Badge Color */
+.badge.badge-vcPerson {
+    background-color: yellow;
+}
+.badge.badge-gcPerson {
+    background-color: grey;
+} 
+/* People Grid Loading Spinner */
+.employee-loading {
+    height: 65vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

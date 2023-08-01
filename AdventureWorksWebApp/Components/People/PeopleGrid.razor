@@ -1,0 +1,152 @@
+﻿@page "/People"
+
+<br />
+<div class="alert alert-primary" role="alert">
+    <div class="row">
+        <div class="col-lg-9">
+            <h5><b>People</b></h5>
+        </div>
+        <div class="col-lg-3 text-right">
+            <NavLink role="button" class="btn btn-light btn-sm">
+                <a onclick="history.back()">Back</a>
+            </NavLink>
+        </div>
+    </div>
+</div>
+@if (IsLoading)
+{
+    <div class="employee-loading">
+        <TelerikLoader Visible="@LoaderVisible"
+                       Size="@ThemeConstants.Loader.Size.Large"
+                       ThemeColor="@ThemeConstants.Loader.ThemeColor.Primary"
+                       Type="@LoaderType.ConvergingSpinner" />
+    </div>
+}
+else
+{
+    <TelerikGrid Data="@PersonData"
+                 Height="100%"
+                 PageSize="10"
+                 Pageable="true" Sortable="true"
+                 FilterMode="@GridFilterMode.FilterRow">
+        <GridToolBar>
+            <TelerikButton OnClick="@OnClickCreate" Icon="add" ThemeColor="@ThemeConstants.Button.ThemeColor.Primary">New Employee</TelerikButton>
+        </GridToolBar>
+        <GridColumns>
+            <GridColumn Field="@nameof(Person.FullName)" Title="Name" />
+            <GridColumn Field="@nameof(Person.PersonType)" Title="Person Type">
+                <Template>
+                    @{
+                        var p = (Person)context;
+                        @if (p.PersonType.Equals("SC"))
+                        {
+                            <span>
+                                <h6><span class="badge bg-success">Store Contact</span></h6>
+                            </span>
+                        }
+                        @if (p.PersonType.Equals("IN"))
+                        {
+                            <span>
+                                <h6><span class="badge bg-danger">Individual (retail) Customer</span></h6>
+                            </span>
+                        }
+                        @if (p.PersonType.Equals("SP"))
+                        {
+                            <span>
+                                <h6><span class="badge bg-warning">Sales Person</span></h6>
+                            </span>
+                        }
+                        @if (p.PersonType.Equals("EM"))
+                        {
+                            <span>
+                                <h6><span class="badge bg-primary">Employee (Non-Sales)</span></h6>
+                            </span>
+                        }
+                        @if (p.PersonType.Equals("VC"))
+                        {
+                            <span>
+                                <h6><span class="badge badge-vcPerson">Vendor Contact</span></h6>
+                            </span>
+                        }
+                        @if (p.PersonType.Equals("GC"))
+                        {
+                            <span>
+                                <h6><span class="badge badge-gcPerson">General Contact</span></h6>
+                            </span>
+                        }
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Field="@nameof(Person.EmailPromotion)" Title="Email Promo">
+                <Template>
+                    @{
+                        var p = (Person)context;
+                        @if (p.EmailPromotion.Equals(0))
+                        {
+                            <span>
+                                <h6><span class="badge bg-warning">Does Not receive e-mail promo from AW</span></h6>
+                            </span>
+                        }
+                        @if (p.EmailPromotion.Equals(1))
+                        {
+                            <span>
+                                <h6><span class="badge bg-success">Receives e-mail promo</span></h6>
+                            </span>
+                        }
+                        @if (p.EmailPromotion.Equals(2))
+                        {
+                            <span>
+                                <h6><span class="badge bg-danger">No e-mail promo from AW or Partners</span></h6>
+                            </span>
+                        }
+                    }
+                </Template>
+            </GridColumn>
+            
+            <GridCommandColumn Title="Actions">
+                <GridCommandButton OnClick="(args)=> OnClickEmployeeSelected(args)" Title="View" Icon="checkmark" ThemeColor="@ThemeConstants.Button.ThemeColor.Warning"></GridCommandButton>
+            </GridCommandColumn>
+        </GridColumns>
+    </TelerikGrid>
+
+}
+<br />
+<br />
+
+@code {
+    public List<Person>? PersonData { get; set; }
+    public int BusinessEntityId { get; set; }
+    public string FullName { get; set; }
+
+
+    public bool IsLoading { get; set; }
+    public bool LoaderVisible { get; set; }
+
+    public async Task GetGridData()
+    {
+        IsLoading = true;
+        LoaderVisible = true;
+        await Task.Delay(1);
+        PersonData = await _personService.GetAllPeopleAsync();
+        //FullName = PersonData.Select(p => p.FirstName + "" + p.MiddleName + "" + p.LastName).First();
+
+        IsLoading = false;
+        LoaderVisible = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetGridData();
+    }
+
+    public void OnClickCreate()
+    {
+        _navigationManager.NavigateTo("/NewEmployee");
+    }
+
+    public void OnClickEmployeeSelected(GridCommandEventArgs args)
+    {
+        EmployeeViewModel item = (EmployeeViewModel)args.Item;
+        _navigationManager.NavigateTo("/ViewEmployee/Id/" + item.BusinessEntityId);
+    }
+}

@@ -10,7 +10,7 @@
         <TelerikButton OnClick="@OnClickCreate" Icon="add" ThemeColor="@ThemeConstants.Button.ThemeColor.Primary">New Department</TelerikButton>
     </GridToolBar>
     <GridColumns>
-        <GridColumn Field="@nameof(EmployeeDepartmentHistory.DepartmentId)" Title="Department">
+        <GridColumn Field="@nameof(EmployeeDepartmentHistory.DepartmentId)" Title="Department Group">
             <Template>
                 @{
                     var dept = (EmployeeDepartmentHistory)context;
@@ -19,7 +19,7 @@
                 @DeptData.FirstOrDefault(d => d.DepartmentId == dept.DepartmentId)?.GroupName
             </Template>
         </GridColumn>
-        <GridColumn Field="@nameof(EmployeeDepartmentHistory.DepartmentId)" Title="Title">
+        <GridColumn Field="@nameof(EmployeeDepartmentHistory.DepartmentId)" Title="Department Name">
             <Template>
                 @{
                     var dept = (EmployeeDepartmentHistory)context;
@@ -72,8 +72,8 @@
     public async Task GetGridData()
     {
         EmployeeDeptHistoriesData = await _hrService.GetEmployeeDepartmentHistoryDataAsync(BusinessEntityId);
-        DeptData = EmployeeDeptHistoriesData.Select(e => e.Department).ToList();
-        ShiftData = EmployeeDeptHistoriesData.Select(e => e.Shift).ToList();
+        DeptData = EmployeeDeptHistoriesData.Select(ed => ed.Department).ToList();
+        ShiftData = EmployeeDeptHistoriesData.Select(ed => ed.Shift).ToList();
     }
 
     protected override async Task OnInitializedAsync()

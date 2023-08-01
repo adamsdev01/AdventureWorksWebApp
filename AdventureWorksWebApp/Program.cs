@@ -1,5 +1,6 @@
-﻿using AdventureWorksWebApp.Models;
+﻿using AdventureWorksWebApp.Models.AdventureWorksModels;
 using AdventureWorksWebApp.Services.HumanResources;
+using AdventureWorksWebApp.Services.PersonService;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,8 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddTelerikBlazor();
 // Register Services
 builder.Services.AddScoped<HumanResourcesService>();
+builder.Services.AddScoped<PersonService>();
+
 
 // Add ConnectionString
 builder.Configuration

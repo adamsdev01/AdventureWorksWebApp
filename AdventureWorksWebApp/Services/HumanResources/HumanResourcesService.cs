@@ -124,6 +124,7 @@ namespace AdventureWorksWebApp.Services.HumanResources
                 .Include(e => e.Department)
                 .Include(e => e.Shift)
                 .Where(e => e.BusinessEntityId.Equals(businessEntityId))
+                .OrderBy(e => e.StartDate)
                 .ToListAsync();
 
             return employeeDepartmentHistory;
